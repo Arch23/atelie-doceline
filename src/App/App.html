@@ -1,8 +1,18 @@
 <div id="app">
-    <div id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
-</div>
+    <v-app>
+        <NavigationDrawer v-bind:drawerToggle="drawerToggle"/>
+    
+        <v-app-bar dense app>
+            <v-app-bar-nav-icon @click.stop="drawerToggle = !drawerToggle"></v-app-bar-nav-icon>
+            <v-app-bar-title>Ateliê Doceline</v-app-bar-title>
+        </v-app-bar>
+    
+        <v-main>
+            <v-container fluid>
+                <router-view></router-view>
+            </v-container>
+        </v-main>
+    </v-app>
 
+    <v-overlay :value="isLoading"></v-overlay>
+</div>
