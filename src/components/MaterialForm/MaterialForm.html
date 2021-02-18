@@ -1,0 +1,57 @@
+<v-card elevation="2">
+    <v-card-title>{{title()}}</v-card-title>
+    <v-card-text>
+        <v-form v-model="isValid" ref="materialForm" lazy-validation>
+            <v-row>
+                <v-col>
+                    <v-text-field label="Nome" :counter="255" :rules="nameRules" required v-model="name"></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-combobox v-model="selectedBrand" :items="brandsForDisplay">
+                        <template v-slot:label>
+                            <div>
+                                Marca <small>(opcional)</small>
+                            </div>
+                        </template>
+                    </v-combobox>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-select v-model="selectedUnit" :items="units" item-text="title" item-value="id" label="Unidade"
+                        return-object :menu-props="{ offsetY: true}" required :rules="unitRules">
+                    </v-select>
+                </v-col>
+                <v-col>
+                    <v-text-field type="number" label="Quantidade" v-bind:suffix="getQuantitySuffix()"
+                        v-bind:disabled="!isUnitSelected()" required :rules="quantityRules" v-model="quantity"></v-text-field>
+                </v-col>
+                <v-col>
+                    <v-text-field type="number" label="Preço" prefix="R$" required :rules="priceRules" v-model="price"></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-textarea clearable no-resize rows="3" name="notes" :rules="noteRules" counter v-model="notes">
+                        <template v-slot:label>
+                            <div>
+                                Observações <small>(opcional)</small>
+                            </div>
+                        </template>
+                    </v-textarea>
+                </v-col>
+            </v-row>
+        </v-form>
+    </v-card-text>
+    <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn @click="resetForm()" color="secondary" rounded>
+            Limpar
+        </v-btn>
+        <v-btn @click="saveMaterial()" :disabled="!isValid" color="primary" rounded>
+            {{saveButtonText}}
+        </v-btn>
+    </v-card-actions>
+</v-card>

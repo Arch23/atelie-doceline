@@ -4,27 +4,27 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-    loading: 0
-  },
-  mutations: {
-    beginLoading(state) {
-      state.loading += 1;
+    state: {
+        loading: 0,
     },
-    endLoading(state) {
-      state.loading -= 1;
-    }
-  },
-  actions: {
-    beginLoading(context) {
-      context.commit("beginLoading");
+    mutations: {
+        beginLoading(state) {
+            state.loading += 1;
+        },
+        endLoading(state) {
+            state.loading -= 1;
+        },
     },
-    endLoading(context) {
-      context.commit("endLoading");
-    }
-  },
-  modules: {},
-  getters: {
-    loading: state => state.loading
-  }
+    actions: {
+        beginLoading(context) {
+            context.commit("beginLoading");
+        },
+        endLoading(context) {
+            context.commit("endLoading");
+        },
+    },
+    modules: {},
+    getters: {
+        loading: state => state.loading,
+    },
 });
