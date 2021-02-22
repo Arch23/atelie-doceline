@@ -9,14 +9,43 @@
                 />
             </v-col>
         </v-row>
+        <v-row>
+            <v-col>
+                <v-button @click.stop="openS()">success</v-button>
+                <v-button @click.stop="openI()">info</v-button>
+                <v-button @click.stop="openW()">warning</v-button>
+                <v-button @click.stop="openE()">error</v-button>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import Alert from "@/components/Alert";
 
-@Component
-export default class Home extends Vue {}
+@Component({
+    components:{
+        Alert
+    }
+})
+export default class Home extends Vue {
+    openS() {
+        console.log("success");
+    }
+
+    openI() {
+        console.log("info");
+    }
+
+    openW() {
+        console.log("warning");
+    }
+
+    openE() {
+        console.log("error");
+    }
+}
 </script>
 
 <style scoped lang="scss">

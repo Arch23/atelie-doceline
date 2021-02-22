@@ -1,6 +1,6 @@
 <div id="app">
     <v-app>
-        <NavigationDrawer v-bind:drawerToggle="drawerToggle"/>
+        <NavigationDrawer :changeToggle="drawerToggle"/>
     
         <v-app-bar dense app>
             <v-app-bar-nav-icon @click.stop="drawerToggle = !drawerToggle"></v-app-bar-nav-icon>
@@ -14,5 +14,10 @@
         </v-main>
     </v-app>
 
-    <v-overlay :value="isLoading"></v-overlay>
+    <v-overlay :value="isLoading">
+        <v-progress-circular
+            indeterminate
+            color="primary"
+        ></v-progress-circular>
+    </v-overlay>
 </div>

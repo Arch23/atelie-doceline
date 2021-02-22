@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         loading: 0,
+        drawerToggle: false
     },
     mutations: {
         beginLoading(state) {
@@ -13,7 +14,7 @@ export default new Vuex.Store({
         },
         endLoading(state) {
             state.loading -= 1;
-        },
+        }
     },
     actions: {
         beginLoading(context) {
@@ -21,10 +22,11 @@ export default new Vuex.Store({
         },
         endLoading(context) {
             context.commit("endLoading");
-        },
+        }
     },
     modules: {},
     getters: {
-        loading: state => state.loading,
+        loading: state => state.loading
     },
+    
 });

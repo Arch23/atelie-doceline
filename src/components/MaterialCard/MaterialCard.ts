@@ -15,6 +15,7 @@ export default class MaterialCard extends Vue {
     @Prop({required: true}) materialModel !: Material;
     @Prop() brandList !: Brand[];
     @Prop() unitList !: Unit[];
+    @Prop({required: false, default : false}) isHoverActive !: boolean;
 
     private selectedBrand: Brand = {} as Brand;
     private selectedUnit: Unit = {} as Unit;

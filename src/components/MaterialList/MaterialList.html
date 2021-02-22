@@ -1,0 +1,16 @@
+<v-card elevation="2" class="search-card">
+    <v-card-title>
+        Lista de matérias-primas
+    </v-card-title>
+    <v-card-text>
+        <v-text-field
+            v-model="search"
+            label="Pesquisar"
+        ></v-text-field>
+        <v-row v-for="(material) in materialList.filter(materialFilter)" :key="material.id">
+            <v-col>
+                <material-card :isHoverActive="true" :materialModel="material" :brandList="brandList" :unitList="unitList"></material-card>
+            </v-col>
+        </v-row>
+    </v-card-text>
+</v-card>

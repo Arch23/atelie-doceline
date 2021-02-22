@@ -1,50 +1,49 @@
-<v-card elevation="2">
-    <v-card-title>
-        {{cardName}}
-    </v-card-title>
-    <v-card-subtitle>
-        {{selectedBrand.title}}
-    </v-card-subtitle>
-    <v-divider></v-divider>
-    <v-card-text>
-        <v-row>
-            <v-col>
-                <v-text-field :value="materialModel.quantity" :suffix="getQuantitySuffix" label="Quantidade" readonly>
-                </v-text-field>
-            </v-col>
-            <v-col>
-                <v-text-field :value="materialModel.price" prefix="R$" label="Preço" readonly></v-text-field>
-            </v-col>
-        </v-row>
-    </v-card-text>
-    <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn text @click="expandNote = true">
-            Observações
-        </v-btn>
-    </v-card-actions>
-    <v-expand-transition>
-        <v-card v-if="expandNote" class="transition-fast-in-fast-out v-card--reveal" style="height: 100%;">
-            <v-card-title>
-                {{cardName}}
-            </v-card-title>
-            <v-card-subtitle>
-                {{selectedBrand.title}}
-            </v-card-subtitle>            
-            <v-divider></v-divider>
-            <v-card-text class="pb-0">
-                <v-textarea
-                    label="Observações"
-                    v-model="materialModel.note"
-                    rows="2"
-                ></v-textarea>
-            </v-card-text>
-            <v-card-actions class="pt-0">
-                <v-spacer></v-spacer>
-                <v-btn text @click="expandNote = false">
-                    Fechar
-                </v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-expand-transition>
-</v-card>
+<v-hover v-slot="{ hover }" :disabled="!isHoverActive" >
+    <v-card :elevation="hover ? 8 : 2">
+        <v-card-title>
+            {{cardName}}
+        </v-card-title>
+        <v-card-subtitle>
+            {{selectedBrand.title}}
+        </v-card-subtitle>
+        <v-divider></v-divider>
+        <v-card-text>
+            <v-row>
+                <v-col>
+                    <v-text-field :value="materialModel.quantity" :suffix="getQuantitySuffix" label="Quantidade"
+                        readonly>
+                    </v-text-field>
+                </v-col>
+                <v-col>
+                    <v-text-field :value="materialModel.price" prefix="R$" label="Preço" readonly></v-text-field>
+                </v-col>
+            </v-row>
+        </v-card-text>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="expandNote = true" :disabled="!(materialModel.note && materialModel.note.length !== 0)">
+                Observações
+            </v-btn>
+        </v-card-actions>
+        <v-expand-transition>
+            <v-card v-if="expandNote" class="transition-fast-in-fast-out v-card--reveal" style="height: 100%;">
+                <v-card-title>
+                    {{cardName}}
+                </v-card-title>
+                <v-card-subtitle>
+                    {{selectedBrand.title}}
+                </v-card-subtitle>
+                <v-divider></v-divider>
+                <v-card-text class="pb-0">
+                    <v-textarea label="Observações" v-model="materialModel.note" rows="2"></v-textarea>
+                </v-card-text>
+                <v-card-actions class="pt-0">
+                    <v-spacer></v-spacer>
+                    <v-btn text @click="expandNote = false">
+                        Fechar
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-expand-transition>
+    </v-card>
+</v-hover>
