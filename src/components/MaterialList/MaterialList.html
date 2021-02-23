@@ -7,7 +7,7 @@
             v-model="search"
             label="Pesquisar"
         ></v-text-field>
-        <v-row v-for="(material) in materialList.filter(materialFilter)" :key="material.id">
+        <v-row v-for="(material) in inverted?materialList.filter(materialFilter).reverse():materialList.filter(materialFilter)" :key="material.id">
             <v-col>
                 <material-card :isHoverActive="true" :materialModel="material" :brandList="brandList" :unitList="unitList"></material-card>
             </v-col>

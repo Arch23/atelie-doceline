@@ -2,8 +2,8 @@ import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 
 @Component
 export default class NavigationDrawer extends Vue {
-    @Prop({required: true}) changeToggle !: boolean; 
-    
+    @Prop({ required: true }) changeToggle!: boolean;
+
     private drawerToggle = false;
 
     private routes: Array<object> = [
@@ -26,7 +26,7 @@ export default class NavigationDrawer extends Vue {
         }
     }
 
-    @Watch('changeToggle')
+    @Watch("changeToggle")
     toggleDrawer(newVal: boolean, oldVal: boolean) {
         this.drawerToggle = !this.drawerToggle;
     }

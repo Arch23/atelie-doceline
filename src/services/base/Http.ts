@@ -1,5 +1,9 @@
+import BusinessResponse from "@/entities/BusinessResponse";
 import store from "@/store";
 import axios from "axios";
+import Vue from "vue";
+import interceptorsSetup from "@/helpers/interceptor";
+
 
 export default class Http {
     private path: string;
@@ -19,41 +23,50 @@ export default class Http {
                 },
             ],
         });
+
+        interceptorsSetup();
     }
 
     static build(path: string, options: any): any {
         return new this(path, options);
     }
 
-    get(url: string): Promise<any> {
-        store.dispatch("beginLoading");
-        return this.http.get(Http.normalize(this.path, url)).then(Http.then);
+    get(url: string): Promise<BusinessResponse> {
+        return this.http.get(Http.normalize(this.path, url)).then(Http.then).catch(Http.catch);
     }
 
-    post(url: string, data: any): Promise<any> {
+    post(url: string, data: any): Promise<BusinessResponse> {
         return this.http
             .post(Http.normalize(this.path, url), data)
-            .then(Http.then);
+            .then(Http.then).catch(Http.catch);
     }
 
-    put(url: string, data: any): Promise<any> {
+    put(url: string, data: any): Promise<BusinessResponse> {
         return this.http
             .put(Http.normalize(this.path, url), data)
-            .then(Http.then);
+            .then(Http.then).catch(Http.catch);
     }
 
-    delete(url: string): Promise<any> {
-        return this.http.delete(Http.normalize(this.path, url)).then(Http.then);
+    delete(url: string): Promise<BusinessResponse> {
+        store.dispatch("beginLoading");
+        return this.http.delete(Http.normalize(this.path, url)).then(Http.then).catch(Http.catch);
     }
 
     static then(response: any): any {
-        store.dispatch("endLoading");
         if (!response.data) {
             return {};
         }
         return typeof response.data === "string"
             ? JSON.parse(response.data)
             : response.data;
+    }
+
+    static catch(response: any) : void {
+        Vue.$toast.open({
+            message: response.message,
+            type: 'error',
+            duration: 0
+        });
     }
 
     static normalize(start: string, end: string): string {

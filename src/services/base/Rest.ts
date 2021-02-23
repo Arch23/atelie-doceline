@@ -1,3 +1,4 @@
+import BusinessResponse from "@/entities/BusinessResponse";
 import Api from "./Api";
 
 export default class Rest extends Api {
@@ -11,23 +12,23 @@ export default class Rest extends Api {
         return new this(this.resource);
     }
 
-    create(model: any): Promise<any> {
+    create(model: any): Promise<BusinessResponse> {
         return this.post("", model);
     }
 
-    readAll(): Promise<any> {
+    readAll(): Promise<BusinessResponse> {
         return this.get("");
     }
 
-    read(id: number): Promise<any> {
+    read(id: number): Promise<BusinessResponse> {
         return this.get(`/${id}`);
     }
 
-    update(model: any): Promise<any> {
+    update(model: any): Promise<BusinessResponse> {
         return this.put("", model);
     }
 
-    destroy(id: number): Promise<any> {
+    destroy(id: number): Promise<BusinessResponse> {
         return this.delete(`/${id}`);
     }
 }

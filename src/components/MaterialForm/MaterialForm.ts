@@ -4,7 +4,7 @@ import UnitService from "@/services/UnitService";
 import Brand from "@/entities/Brand";
 import Unit from "@/entities/Unit";
 import Material from "@/entities/Material";
-import { forkJoin } from 'rxjs';
+import { forkJoin } from "rxjs";
 import MaterialService from "@/services/MaterialService";
 
 const brandService = BrandService.build();
@@ -13,82 +13,89 @@ const materialService = MaterialService.build();
 
 @Component
 export default class MaterialForm extends Vue {
-    @Prop({required: false}) materialId !: number
+    @Prop({ required: false, default: 0 }) materialId!: number;
 
-    materialModel : Material = {} as Material;
+    materialModel: Material = {} as Material;
 
     isEdit = false;
 
     isValid = false;
     brands: Array<Brand> = [];
-    
+
     brandsForDisplay: Array<string> = [];
     units: Array<Unit> = [];
 
     selectedBrand = "";
     selectedUnit: Unit = {} as Unit;
-    
+
     saveButtonText = "Salvar";
 
-    title() : string {
-        return this.isEdit?"Alterar matéria prima":"Nova matéria prima";
+    title(): string {
+        return this.isEdit ? "Alterar matéria prima" : "Nova matéria prima";
     }
 
     nameRules = [
         (v: string) => !!v || "Nome obrigatório",
-        (v: string) => (v && v.length >= 1 && v.length <= 255) || "Nome precisa ter entre 1 e 255 caracteres"
+        (v: string) =>
+            (v && v.length >= 1 && v.length <= 255) ||
+            "Nome precisa ter entre 1 e 255 caracteres",
     ];
 
-    unitRules = [
-        (v: Unit) => this.isUnitSelected() || "Unidade obrigatória"
-    ];
+    unitRules = [(v: Unit) => this.isUnitSelected() || "Unidade obrigatória"];
 
-    quantityRules = [
-        (v: number) => !!v || "Quantidade obrigatória"
-    ];
+    quantityRules = [(v: number) => !!v || "Quantidade obrigatória"];
 
-    priceRules = [
-        (v: number) => !!v || "Preço obrigatório"
-    ];
+    priceRules = [(v: number) => !!v || "Preço obrigatório"];
 
     noteRules = [
-        (v: string) => (v ? v.length <= 5000 : true) || "Observações precisa ter até 5000 caracteres"
+        (v: string) =>
+            (v ? v.length <= 5000 : true) ||
+            "Observações precisa ter até 5000 caracteres",
     ];
 
     mounted() {
-        forkJoin(
-            [brandService.readAll(),
-            unitService.readAll()]
-        ).subscribe(([brandsResponse, unitsResponse]) => {
-            if (brandsResponse.isValid) {
-                this.brands = brandsResponse.result;
-                this.brandsForDisplay = this.brands.map(brand => brand.title);
+        Promise.all([brandService.readAll(), unitService.readAll()]).then(
+            ([brandsResponse, unitsResponse]) => {
+                this.afterPromiseAll(brandsResponse, unitsResponse);
             }
+        );
+    }
 
-            if (unitsResponse.isValid) {
-                this.units = unitsResponse.result;
-            }
+    afterPromiseAll(brandsResponse: any, unitsResponse: any) {
+        if (brandsResponse.isValid) {
+            this.brands = brandsResponse.result;
+            this.brandsForDisplay = this.brands.map(brand => brand.title);
+        }
 
-            if (this.materialId && this.materialId !== 0) {
-                this.isEdit = true;
+        if (unitsResponse.isValid) {
+            this.units = unitsResponse.result;
+        }
 
-                materialService.read(this.materialId).then((response) => {
-                    if(response.isValid) {
-                        this.materialModel = response.result;
+        if (!!this.materialId && this.materialId !== 0) {
+            this.isEdit = true;
 
-                        const brandTitle = this.brands.find(el => el.id === this.materialModel.idBrand)?.title;
-                        this.selectedBrand = brandTitle?brandTitle:"";
-            
-                        const unit = this.units.find(el => el.id === this.materialModel.idUnit);
-                        this.selectedUnit = unit?unit:{} as Unit;
-                    }
-                });
-            }
-        });
+            materialService.read(this.materialId).then(response => {
+                if (response.isValid) {
+                    this.materialModel = response.result;
+
+                    const brandTitle = this.brands.find(
+                        el => el.id === this.materialModel.idBrand
+                    )?.title;
+                    this.selectedBrand = brandTitle ? brandTitle : "";
+
+                    const unit = this.units.find(
+                        el => el.id === this.materialModel.idUnit
+                    );
+                    this.selectedUnit = unit ? unit : ({} as Unit);
+                }
+            });
+        } else {
+            this.materialModel = {} as Material;
+        }
     }
 
     getQuantitySuffix(): string {
-        return this.isUnitSelected()? this.selectedUnit.abbreviation : "";
+        return this.isUnitSelected() ? this.selectedUnit.abbreviation : "";
     }
 
     isUnitSelected(): boolean {
@@ -113,34 +120,48 @@ export default class MaterialForm extends Vue {
     }
 
     saveMaterial(): void {
-        const form : any = this.$refs.materialForm;
+        const form: any = this.$refs.materialForm;
         form.validate();
 
-        if(this.isEdit) {
-            materialService.update(this.materialModel).then((response : any) => {
-                if(response.isValid) {
-                    
-                }
-            });
-        }else{
+        this.materialModel.idBrand = this.brands.find(
+            el => el.title === this.selectedBrand
+        )?.id;
 
+        this.materialModel.idUnit = this.selectedUnit.id;
+
+        if (this.isEdit) {
+            this.updateMaterial(this.materialModel);
+        } else {
+            this.createMaterial(this.materialModel);
         }
     }
 
     resetForm(): void {
-        const form : any = this.$refs.materialForm;
+        const form: any = this.$refs.materialForm;
         form.reset();
     }
 
     createMaterial(materialModel: Material): void {
         materialService.create(materialModel).then(response => {
-            if(response.isValid) {
-                
+            if (response.isValid) {
+                this.$toast.open({
+                    message: "Matéria-prima criada com sucesso!",
+                });
+
+                this.$emit("updatedMaterialList");
             }
         });
     }
 
     updateMaterial(materialModel: Material): void {
+        materialService.update(this.materialModel).then((response: any) => {
+            if (response.isValid) {
+                this.$toast.open({
+                    message: "Matéria-prima alterada com sucesso!",
+                });
 
+                this.$emit("updatedMaterialList");
+            }
+        });
     }
 }

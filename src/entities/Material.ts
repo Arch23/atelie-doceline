@@ -1,11 +1,11 @@
 export default interface Material {
     id: number;
     name: string;
-    idBrand: number;
+    idBrand: number | undefined;
     price: number;
     quantity: number;
     idUnit: number;
     note: string;
-    createDate: Date;
-    alterDate: Date;
+    createDate: Date | undefined;
+    alterDate: Date | undefined;
 }
