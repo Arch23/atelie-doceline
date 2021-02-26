@@ -1,5 +1,5 @@
-export default interface BusinessResponse {
+export default interface BusinessResponse<T = any> {
     isValid: boolean;
     errors: string[];
-    result: any;
+    result: T;
 }

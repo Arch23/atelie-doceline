@@ -1,78 +1,44 @@
 import BusinessResponse from "@/entities/BusinessResponse";
-import store from "@/store";
-import axios from "axios";
-import Vue from "vue";
-import interceptorsSetup from "@/helpers/interceptor";
+import { AxiosInstance, AxiosResponse } from "axios";
+import Api from "./Api";
 
+export default class Http<T = any> {
+    http: AxiosInstance;
 
-export default class Http {
-    private path: string;
-    private http: any;
-
-    options: any;
-
-    constructor(path: string, options: any = {}) {
-        this.options = options;
-        this.path = path;
-        this.http = axios.create({
-            baseURL: "https://localhost:44368",
-            timeout: 1000,
-            transformResponse: [
-                function(data) {
-                    return data;
-                },
-            ],
-        });
-
-        interceptorsSetup();
+    constructor() {
+        this.http = Api;
     }
 
-    static build(path: string, options: any): any {
-        return new this(path, options);
+    baseGetAll(resource: string): Promise<BusinessResponse<T[]>> {
+        return this.http.get(resource).then(this.then);
     }
 
-    get(url: string): Promise<BusinessResponse> {
-        return this.http.get(Http.normalize(this.path, url)).then(Http.then).catch(Http.catch);
+    baseGet(resource: string, id: number): Promise<BusinessResponse<T>> {
+        return this.http.get(`${resource}/${id}`).then(this.then);
     }
 
-    post(url: string, data: any): Promise<BusinessResponse> {
-        return this.http
-            .post(Http.normalize(this.path, url), data)
-            .then(Http.then).catch(Http.catch);
+    basePost(resource: string, model: T): Promise<BusinessResponse<number>> {
+        return this.http.post(resource, model).then(this.then);
     }
 
-    put(url: string, data: any): Promise<BusinessResponse> {
-        return this.http
-            .put(Http.normalize(this.path, url), data)
-            .then(Http.then).catch(Http.catch);
+    baseUpdate(resource: string, model: T): Promise<BusinessResponse<boolean>> {
+        return this.http.put(resource, model).then(this.then);
     }
 
-    delete(url: string): Promise<BusinessResponse> {
-        store.dispatch("beginLoading");
-        return this.http.delete(Http.normalize(this.path, url)).then(Http.then).catch(Http.catch);
+    baseDelete(
+        resource: string,
+        id: number
+    ): Promise<BusinessResponse<boolean>> {
+        return this.http.delete(`${resource}/${id}`).then(this.then);
     }
 
-    static then(response: any): any {
+    private then(response: AxiosResponse) {
         if (!response.data) {
             return {};
         }
-        return typeof response.data === "string"
-            ? JSON.parse(response.data)
-            : response.data;
-    }
-
-    static catch(response: any) : void {
-        Vue.$toast.open({
-            message: response.message,
-            type: 'error',
-            duration: 0
-        });
-    }
-
-    static normalize(start: string, end: string): string {
-        return [start, end]
-            .join("/")
-            .replace("//", "/")
-            .replace(/\/\s*$/gm, "");
+        if (typeof response.data === "string") {
+            return JSON.parse(response.data);
+        }
+        return response.data;
     }
 }

@@ -7,9 +7,9 @@ import Material from "@/entities/Material";
 import Brand from "@/entities/Brand";
 import Unit from "@/entities/Unit";
 
-const materialService = MaterialService.build();
-const brandService = BrandService.build();
-const unitService = UnitService.build();
+const materialService = new MaterialService();
+const brandService = new BrandService();
+const unitService = new UnitService();
 
 @Component({
     components: {
@@ -26,9 +26,9 @@ export default class MaterialList extends Vue {
 
     mounted() {
         Promise.all([
-            materialService.readAll(),
-            unitService.readAll(),
-            brandService.readAll(),
+            materialService.getAll(),
+            unitService.getAll(),
+            brandService.getAll(),
         ]).then(([materialResponse, unitResponse, brandResponse]) => {
             this.afterPromiseAll(materialResponse, unitResponse, brandResponse);
         });
@@ -54,10 +54,22 @@ export default class MaterialList extends Vue {
         this.getMaterials();
     }
 
+    refreshBrandList(): void {
+        this.getMaterials();
+    }
+
     getMaterials() {
-        materialService.readAll().then((materialResponse: any) => {
+        materialService.getAll().then((materialResponse: any) => {
             if (materialResponse.isValid) {
                 this.materialList = materialResponse.result;
+            }
+        });
+    }
+
+    getBrands() {
+        brandService.getAll().then((brandResponse: any) => {
+            if (brandResponse.isValid) {
+                this.brandList = brandResponse.result;
             }
         });
     }

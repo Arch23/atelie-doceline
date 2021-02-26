@@ -5,8 +5,8 @@ import UnitService from "@/services/UnitService";
 import Brand from "@/entities/Brand";
 import Unit from "@/entities/Unit";
 
-const brandService = BrandService.build();
-const unitService = UnitService.build();
+const brandService = new BrandService();
+const unitService = new UnitService();
 
 @Component
 export default class MaterialCard extends Vue {
@@ -32,7 +32,7 @@ export default class MaterialCard extends Vue {
         if (this.brandList && this.unitList) {
             this.setSelectedModels(this.brandList, this.unitList);
         } else {
-            Promise.all([brandService.readAll(), unitService.readAll()]).then(
+            Promise.all([brandService.getAll(), unitService.getAll()]).then(
                 ([brandsResponse, unitsResponse]) => {
                     let brands: Brand[] = [];
                     let units: Unit[] = [];

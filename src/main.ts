@@ -5,14 +5,15 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import VueToast from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
+import Api from "@/services/base/Api";
 //import 'vue-toast-notification/dist/theme-default.css';
 
 Vue.use(VueToast, {
     position: "bottom",
     dismissible: true,
     pauseOnHover: true,
+    duration: 0
 });
-
 
 Vue.config.productionTip = false;
 
